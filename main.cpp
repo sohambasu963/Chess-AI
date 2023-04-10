@@ -4,6 +4,8 @@ using namespace std;
 
 
 const string PATH_DIR = "/Users/sohambasu/CLionProjects/chess-ai/";
+const int size = 56;
+sf::Sprite sPieces[32];
 
 int board_map[8][8] =
         { -1, -2, -3, -4, -5, -3, -2, -1,
@@ -21,7 +23,7 @@ void resizeBoard(sf::RenderWindow &window, sf::Sprite &sBoard, sf::Texture& tBoa
 }
 
 
-void load_start_position(const int size) {
+void loadStartPosition(const int size) {
     int k = 0;
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
@@ -29,7 +31,8 @@ void load_start_position(const int size) {
             if (position != 0) {
                 int x = abs(position) - 1;
                 int y = position > 0 ? 1 : 0;
-
+                sPieces[k].setTextureRect( sf::IntRect(size*x,size*y,size,size) );
+                sPieces[k].setPosition(size*j,size*i);
                 k++;
 
             }
@@ -42,8 +45,8 @@ void load_start_position(const int size) {
 int main() {
 
     // initialize game window
-    const int windowWidth = 1500;
-    const int windowHeight = 1500;
+    const int windowWidth = 480;
+    const int windowHeight = 480;
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Chess");
 
     // load chess board and pieces
@@ -55,11 +58,12 @@ int main() {
 
     sf::Texture tPieces;
     tPieces.loadFromFile(PATH_DIR + "images/figures.png");
-    sf::Sprite sPieces[32];
+    // sf::Sprite sPieces[32];
     for (int i = 0; i < 32; i++) {
         sPieces[i].setTexture(tPieces);
+        sPieces[i].setTextureRect( sf::IntRect(56, 56, 56, 56) );
     }
-    // load_start_position();
+    // loadStartPosition(56);
 
     float boardScale = 0.8f;
 
@@ -74,6 +78,14 @@ int main() {
                 case sf::Event::Resized:
                     resizeBoard(window, sBoard, tBoard);
                     break;
+                case sf::Event::MouseButtonPressed:
+                    if (event.key.code == sf::Mouse::Left) {
+                        // drag the piece
+                    }
+                case sf::Event::MouseButtonReleased:
+                    if (event.key.code == sf::Mouse::Left) {
+                        // drop the piece
+                    }
                 default:
                     break;
             }
@@ -82,6 +94,7 @@ int main() {
 
         window.clear();
         window.draw(sBoard);
+        window.draw(sPieces[0]);
         window.display();
     }
 
