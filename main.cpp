@@ -36,14 +36,41 @@ int main() {
 
     board.loadPieces(sPieces, tPieces);
 
-    // Game loop
+    float dx, dy;
+    bool pieceMoving = false;
+    int current_piece;
     while (window.isOpen()) {
-        // Process events
+
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         sf::Event event;
+
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                window.close();
+            switch (event.type) {
+                case sf::Event::Closed:
+                    window.close();
+                    break;
+                case sf::Event::MouseButtonPressed:
+                    if (event.key.code == sf::Mouse::Left) {
+                        for (int i = 0; i < 32; i++) {
+                            if (sPieces[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                                current_piece = i;
+                                pieceMoving = true;
+                                dx = mousePos.x - sPieces[i].getPosition().x;
+                                dy = mousePos.y - sPieces[i].getPosition().y;
+                            }
+                        }
+                    }
+                    break;
+                case sf::Event::MouseButtonReleased:
+                    if (event.key.code == sf::Mouse::Left) {
+                        pieceMoving = false;
+                    }
+                default:
+                    break;
             }
+        }
+        if (pieceMoving) {
+            sPieces[current_piece].setPosition(mousePos.x - dx, mousePos.y - dy);
         }
 
         window.clear();
