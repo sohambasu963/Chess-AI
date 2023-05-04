@@ -38,7 +38,8 @@ int main() {
 
     float dx, dy;
     bool pieceMoving = false;
-    int current_piece;
+    int moving_piece;
+
     while (window.isOpen()) {
 
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
@@ -53,7 +54,7 @@ int main() {
                     if (event.key.code == sf::Mouse::Left) {
                         for (int i = 0; i < 32; i++) {
                             if (sPieces[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                                current_piece = i;
+                                moving_piece = i;
                                 pieceMoving = true;
                                 dx = mousePos.x - sPieces[i].getPosition().x;
                                 dy = mousePos.y - sPieces[i].getPosition().y;
@@ -64,13 +65,14 @@ int main() {
                 case sf::Event::MouseButtonReleased:
                     if (event.key.code == sf::Mouse::Left) {
                         pieceMoving = false;
+                        board.movePiece(mousePos, sPieces[moving_piece], moving_piece);
                     }
                 default:
                     break;
             }
         }
         if (pieceMoving) {
-            sPieces[current_piece].setPosition(mousePos.x - dx, mousePos.y - dy);
+            sPieces[moving_piece].setPosition(mousePos.x - dx, mousePos.y - dy);
         }
 
         window.clear();
